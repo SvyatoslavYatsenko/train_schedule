@@ -1,0 +1,14 @@
+.schedule {
+    position: relative;
+    height: 100%;
+    &__list{
+        position: absolute;
+    }
+}
+
+.modal-background {
+    padding-top: 20px;
+    height: 100vh;
+}
+
+
