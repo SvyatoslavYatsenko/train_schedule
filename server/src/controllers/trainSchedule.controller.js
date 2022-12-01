@@ -19,7 +19,7 @@ sequelize.authenticate().then(() => {
 
 sequelize.sync().then(() => { 
     TrainSchedules.create({
-        number: 222,
+        number: 333,
         route: "Козяти-Бердичів",
         periodicity: "з 5/12/2022 щоденно",
         station: "Бердичів",
