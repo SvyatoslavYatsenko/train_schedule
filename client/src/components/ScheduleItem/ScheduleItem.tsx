@@ -1,8 +1,8 @@
 import React, { FormEvent } from 'react';
-import { ScheduleItemType } from '../../types/TrainSchedule';
+import { ScheduleItemTypeFromServer } from '../../types/TrainSchedule';
 
 type Props = {
-    scheduleItem: ScheduleItemType
+    scheduleItem: ScheduleItemTypeFromServer
     handleDelete: (itemId: number) => Promise<void>
 }
 

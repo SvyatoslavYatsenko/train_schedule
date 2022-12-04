@@ -1,37 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { ScheduleItemTypeFromServer } from '../../types/TrainSchedule';
 import { ScheduleItem } from '../ScheduleItem';
-import { ScheduleItemType } from '../../types/TrainSchedule';
-import { removeScheduleItem } from '../../utils';
 
-type ScheduleListType = ScheduleItemType[] | [];
+type ScheduleListType = ScheduleItemTypeFromServer[] | [];
 
 type Props = {
     toggleModalWindow: (arg: boolean) => void
     modalWindow: boolean
+    data: ScheduleListType
+    handleDelete: (itemId: number) => Promise<void>
 }
 export const ScheduleList: React.FC<Props> = ({
     toggleModalWindow,
-    modalWindow
+    modalWindow,
+    data,
+    handleDelete,
 }) => {
-    const [data, setData] = useState<ScheduleListType>([]);
-    const [seletctedItems, setSelectedItems] = useState<number[]>([]);
-
-    useEffect(() => {
-        fetch('/schedule')
-            .then((res) => res.json())
-            .then((data) => setData(data));
-    }, [seletctedItems]);
-
-    const handleDelete = async (itemId: number) => {
-        setSelectedItems(state => [...state, itemId]);
-        try {
-            await removeScheduleItem(itemId);
-            setData(state => [...state.filter(item => item.id !== itemId)]);
-        } catch {
-            console.log('error');
-        }
-        setSelectedItems([]);
-    };
     
     return (
         <div>
@@ -57,9 +41,6 @@ export const ScheduleList: React.FC<Props> = ({
                 </thead>
                 <tbody>
                 </tbody>  
-                    
-                
-                
                 <tfoot>
                     { 
                         data.map(item => 
@@ -70,7 +51,6 @@ export const ScheduleList: React.FC<Props> = ({
                             />)}
                 </tfoot>
             </table>
-            
         </div>
     );
 };

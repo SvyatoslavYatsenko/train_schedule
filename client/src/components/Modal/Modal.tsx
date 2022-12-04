@@ -1,65 +1,151 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import classNames from 'classnames';
+import { ScheduleItemTypeToServer } from '../../types/TrainSchedule';
 
 type Props = {
     toggleModalWindow: (arg: boolean) => void
     modalWindow: boolean
+    handleNewData: (newItem: ScheduleItemTypeToServer) => void
 }
 
 const Modal: React.FC<Props> = ({
     toggleModalWindow,
-    modalWindow
+    modalWindow,
+    handleNewData,
 }) => {
-    const {register} = useForm();
+    const { 
+        register, 
+        handleSubmit, 
+        formState: { errors } 
+    } = useForm<ScheduleItemTypeToServer>();
 
     return (
         <div>
-            <div className="modal-background">
-                <div className="modal-card">
-                    <header className="modal-card-head">
-                        <p className="modal-card-title">Modal title</p>
-                        <button 
-                            className="delete" 
-                            aria-label="close"
-                            onClick={() => toggleModalWindow(!modalWindow)}
-                        ></button>
-                    </header>
+            <form 
+                onSubmit={handleSubmit(data => handleNewData(data))}
+            >
+                <div className="modal-background">
+                    <div className="modal-card">
+                        <header className="modal-card-head">
+                            <p className="modal-card-title">Modal title</p>
+                            <button 
+                                className="delete" 
+                                aria-label="close"
+                                onClick={() => toggleModalWindow(!modalWindow)}
+                            ></button>
+                        </header>
                     
-                    <form>
+                
                         <section className="modal-card-body is-flex-direction-column">
                             <div className="field">
                                 <label className="label">Номер потяга</label>
                                 <div className="control">
                                     <input 
-                                        className="input is-success" 
-                                        type="text"               
+                                        className={classNames(
+                                            errors.number 
+                                                ? 'input is-danger' 
+                                                : 'input is-success' 
+                                        )}
+                                        type="text"
                                         placeholder="Text input"
+                                        {...register('number', { 
+                                            required: 'Train number is required', 
+                                            maxLength: {
+                                                value: 33,
+                                                message: 'This input exceed maxLength.'
+                                            },
+                                            pattern: {
+                                                value: /^[0-9]/,
+                                                message: 'First symbol must be integer'
+                                            }
+                                        })}
                                     />
                                 </div>
-                                <p className="help is-success">This username is available</p>
+                                {errors.number 
+                                    ? (
+                                        <>
+                                            {errors.number.type === 'required' && (
+                                                <p className="help is-danger">{errors.number.message}</p>
+                                            )}
+                                            {errors.number.type === 'maxLength' && (
+                                                <p className="help is-danger">{errors.number.message}</p>
+                                            )}
+                                            {errors.number.type === 'pattern' && (
+                                                <p className="help is-danger">{errors.number.message}</p>
+                                            )}
+                                        </>
+                                    ) : <p className="help is-success">Good</p>}
                             </div>
+                        
                             <div className='is-flex is-justify-content-space-between is-align-items-center'>
                                 <div className="field">
                                     <label className="label">Маршрут</label>
                                     <div className="control">
                                         <input 
-                                            className="input is-success" 
+                                            className={classNames(
+                                                errors.route_from 
+                                                    ? 'input is-danger' 
+                                                    : 'input is-success' 
+                                            )} 
+                                            {...register ('route_from',
+                                                { 
+                                                    required: 'Input is required', 
+                                                    maxLength: {
+                                                        value: 25,
+                                                        message: 'This input exceed maxLength.'
+                                                    },
+                                                })}
                                             type="text"               
                                             placeholder="Звідки прямує"
                                         />
                                     </div>
-                                    <p className="help is-success">This username is available</p>
+                                    {errors.route_from 
+                                        ? (
+                                            <>
+                                                {errors.route_from.type === 'required' && (
+                                                    <p className="help is-danger">{errors.route_from.message}</p>
+                                                )}
+                                                {errors.route_from.type === 'maxLength' && (
+                                                    <p className="help is-danger">{errors.route_from.message}</p>
+                                                )}
+                                                
+                                            </>
+                                        ) : <p className="help is-success">Good</p>}
                                 </div>
-                                <div className="field mt-2">
-                                    <label className="label"></label>
+                                <div className="field mt-4">
                                     <div className="control">
                                         <input 
-                                            className="input is-success" 
+                                            className={classNames(
+                                                errors.route_to 
+                                                    ? 'input is-danger' 
+                                                    : 'input is-success' 
+                                            )} 
+                                            {...register ('route_to', 
+                                                { 
+                                                    required: 'Input is required', 
+                                                    maxLength: {
+                                                        value: 25,
+                                                        message: 'This input exceed maxLength.'
+                                                    },
+                                                   
+                                                })}
                                             type="text"               
                                             placeholder="Куди прямує"
                                         />
                                     </div>
-                                    <p className="help is-success">This username is available</p>
+                                    {errors.route_to 
+                                        ? (
+                                            <>
+                                                {errors.route_to.type === 'required' && (
+                                                    <p className="help is-danger">{errors.route_to.message}</p>
+                                                )}
+                                                {errors.route_to.type === 'maxLength' && (
+                                                    <p className="help is-danger">{errors.route_to.message}</p>
+                                                )}
+                                                
+                                            </>
+                                        ) : <p className="help is-success">Good</p>}
                                 </div>
                             </div>
                             <div>
@@ -67,66 +153,195 @@ const Modal: React.FC<Props> = ({
                                     <label className="label">Перiодичнiсть з початкової станції маршруту</label>
                                     <div className="control">
                                         <input 
-                                            className="input is-success" 
+                                            className={classNames(
+                                                errors.periodicity 
+                                                    ? 'input is-danger' 
+                                                    : 'input is-success' 
+                                            )} 
+                                            {...register ('periodicity',
+                                                { 
+                                                    required: 'Input is required', 
+                                                    maxLength: {
+                                                        value: 50,
+                                                        message: 'This input exceed maxLength.'
+                                                    }
+                                                })}
                                             type="text"               
                                             placeholder="Text input"
                                         />
                                     </div>
-                                    <p className="help is-success">This username is available</p>
+                                    {errors.periodicity 
+                                        ? (
+                                            <>
+                                                {errors.periodicity.type === 'required' && (
+                                                    <p className="help is-danger">{errors.periodicity.message}</p>
+                                                )}
+                                                {errors.periodicity.type === 'maxLength' && (
+                                                    <p className="help is-danger">{errors.periodicity.message}</p>
+                                                )}
+                                            </>
+                                        ) : <p className="help is-success">Nice</p>}
                                 </div>
                             </div>
                             <div className="field">
                                 <label className="label">Назва станції</label>
                                 <div className="control">
                                     <input 
-                                        className="input is-success" 
+                                        className={classNames(
+                                            errors.station 
+                                                ? 'input is-danger' 
+                                                : 'input is-success' 
+                                        )} 
+                                        {...register ('station', {
+                                            required: 'Input is required', 
+                                            maxLength: {
+                                                value: 25,
+                                                message: 'This input exceed maxLength.'
+                                            },
+                                        })} 
                                         type="text"               
                                         placeholder="Text input"
                                     />
                                 </div>
-                                <p className="help is-success">This username is available</p>
+                                {errors.station 
+                                    ? (
+                                        <>
+                                            {errors.station.type === 'required' && (
+                                                <p className="help is-danger">{errors.station.message}</p>
+                                            )}
+                                            {errors.station.type === 'maxLength' && (
+                                                <p className="help is-danger">{errors.station.message}</p>
+                                            )}                                        </>
+                                    ) : <p className="help is-success">Good</p>}
                             </div>
                             <div className="field">
                                 <label className="label">Час прибуття</label>
                                 <div className="control">
                                     <input 
-                                        className="input is-success" 
-                                        type="time"                
+                                        className={classNames(
+                                            errors.arrival 
+                                                ? 'input is-danger' 
+                                                : 'input is-success' 
+                                        )}
+                                        {...register ('arrival', {
+                                            required: 'Input is required', 
+                                            maxLength: {
+                                                value: 25,
+                                                message: 'This input exceed maxLength.'
+                                            },
+                                            pattern: {
+                                                value: /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+                                                message: 'You have to write time format like 23:00'
+                                            }
+                                        })} 
+                                        type="text"                
                                         placeholder="Text input"
                                     />
                                 </div>
-                                <p className="help is-success">This username is available</p>
+                                {errors.arrival 
+                                    ? (
+                                        <>
+                                            {errors.arrival.type === 'required' && (
+                                                <p className="help is-danger">{errors.arrival.message}</p>
+                                            )}
+                                            {errors.arrival.type === 'maxLength' && (
+                                                <p className="help is-danger">{errors.arrival.message}</p>
+                                            )}
+                                            {errors.arrival.type === 'pattern' && (
+                                                <p className="help is-danger">{errors.arrival.message}</p>
+                                            )}
+                                        </>
+                                    ) : <p className="help is-success">You are smart one</p>}
                             </div>
                             <div className="field">
                                 <label className="label">Час вiдправлення</label>
                                 <div className="control">
                                     <input 
-                                        className="input is-success" 
-                                        type="time"                
+                                        className={classNames(
+                                            errors.departure 
+                                                ? 'input is-danger' 
+                                                : 'input is-success' 
+                                        )}
+                                        {...register ('departure', {
+                                            required: 'Input is required', 
+                                            maxLength: {
+                                                value: 25,
+                                                message: 'This input exceed maxLength.'
+                                            },
+                                            pattern: {
+                                                value: /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+                                                message: 'You have to write time format like 23:00'
+                                            }
+                                        })} 
+                                        type="text"                
                                         placeholder="Text input"
                                     />
                                 </div>
-                                <p className="help is-success">This username is available</p>
+                                {errors.departure 
+                                    ? (
+                                        <>
+                                            {errors.departure.type === 'required' && (
+                                                <p className="help is-danger">{errors.departure.message}</p>
+                                            )}
+                                            {errors.departure.type === 'maxLength' && (
+                                                <p className="help is-danger">{errors.departure.message}</p>
+                                            )}
+                                            {errors.departure.type === 'pattern' && (
+                                                <p className="help is-danger">{errors.departure.message}</p>
+                                            )}
+                                        </>
+                                    ) : <p className="help is-success">Good</p>}
                             </div>
                             <div className="field">
                                 <label className="label">Прибуття на кінцеву станцію</label>
                                 <div className="control">
                                     <input 
-                                        className="input is-danger" 
-                                        type="time"              
+                                        className={classNames(
+                                            errors.terminal 
+                                                ? 'input is-danger' 
+                                                : 'input is-success' 
+                                        )}
+                                        {...register ('terminal', {
+                                            required: 'Input is required', 
+                                            maxLength: {
+                                                value: 25,
+                                                message: 'This input exceed maxLength.'
+                                            },
+                                            pattern: {
+                                                value: /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+                                                message: 'You have to write time format like 23:00'
+                                            }
+                                        })} 
+                                        type="text"              
                                         placeholder="Text input"
                                     />
                                 </div>
-                                <p className="help is-danger">This username is available</p>
+                                {errors.terminal 
+                                    ? (
+                                        <>
+                                            {errors.terminal.type === 'required' && (
+                                                <p className="help is-danger">{errors.terminal.message}</p>
+                                            )}
+                                            {errors.terminal.type === 'maxLength' && (
+                                                <p className="help is-danger">{errors.terminal.message}</p>
+                                            )}
+                                            {errors.terminal.type === 'pattern' && (
+                                                <p className="help is-danger">{errors.terminal.message}</p>
+                                            )}
+                                        </>
+                                    ) : <p className="help is-success">Good</p>}
                             </div>
                         </section>
                         <footer className="modal-card-foot">
-                            <button className="button is-success">Submit</button>
+                            <button 
+                                className="button is-success"
+                                type='submit'
+                            >Submit</button>
                             <button className="button">Cancel</button>
                         </footer>
-                    </form>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     );
 };

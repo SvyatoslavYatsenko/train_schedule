@@ -1,5 +1,7 @@
 import {Sequelize} from 'sequelize';
 import { TrainSchedules } from '../models/trainSchedule.model.js';
+import { deleteSpasesInValues, handleObjectKeys } from '../services/schedule.service.js';
+
 
 const sequelize = new Sequelize(
 	'test',
@@ -17,24 +19,28 @@ sequelize.authenticate().then(() => {
 	console.error('Unable to connect to the database: ', error);
 });
 
-sequelize.sync().then(() => { 
-    TrainSchedules.create({
-        number: 333,
-        route: "Козяти-Бердичів",
-        periodicity: "з 5/12/2022 щоденно",
-        station: "Бердичів",
-        arrival: "12:18",
-        departure: "12:20",
-        terminal: "13:40"
-    }).then(res => {
-        console.log(res)
-    }).catch((error) => {
-        console.error('Failed to create a new record : ', error);
-    });
- 
- }).catch((error) => {
-    console.error('Unable to create record : ', error);
- });
+export const sendData = (req, res) => {
+    const handledData = handleObjectKeys(deleteSpasesInValues((req.body)));
+
+    sequelize.sync().then(() => { 
+        TrainSchedules.create({
+            number: handledData.number,
+            route: handledData.route,
+            periodicity: handledData.periodicity,
+            station: handledData.station,
+            arrival: handledData.arrival,
+            departure: handledData.departure,
+            terminal: handledData.terminal
+        }).then(res => {
+        }).catch((error) => {
+            console.error('Failed to create a new record : ', error);
+        });
+     
+     }).catch((error) => {
+        console.error('Unable to create record : ', error);
+     });
+}
+
 
 export const getAllData = (req, res) => {
     sequelize.sync().then(() => {
