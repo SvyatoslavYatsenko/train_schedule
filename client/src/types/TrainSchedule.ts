@@ -21,3 +21,4 @@ export type ScheduleItemTypeToServer = {
   departure: string,
   terminal: string,
 }
+

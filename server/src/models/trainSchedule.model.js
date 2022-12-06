@@ -35,15 +35,24 @@ export const TrainSchedules = sequelize.define('trainSchedules', {
 	},
 	arrival: {
 		type: DataTypes.TIME,
-		allowNull: false
+		allowNull: false,
+		get: function() {
+			return this.getDataValue('arrival').slice(0, -3);
+		}
 	},
 	departure: {
 		type: DataTypes.TIME,
-		allowNull: false
+		allowNull: false,
+		get: function() {
+			return this.getDataValue('departure').slice(0, -3);
+		}
 	},
 	terminal: {
 		type: DataTypes.TIME,
-		allowNull: false
+		allowNull: false,
+		get: function() {
+			return this.getDataValue('terminal').slice(0, -3);
+		}
 	},
 });
 

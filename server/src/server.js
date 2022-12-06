@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllData, deleteData, sendData } from "./controllers/trainSchedule.controller.js";
+import { getTrainScheduleList, deleteTrainSchedule, createTrainSchedule, updateTrainSchedule } from "./controllers/trainSchedule.controller.js";
 import cors from 'cors'
 import pkg from 'body-parser';
 
@@ -13,6 +13,7 @@ const app = express();
 
 const allowedOrigins = ['http://localhost:3000'];
 
+
 app.use(cors({
   origin: function(origin, callback){
     if(!origin) return callback(null, true);
@@ -25,11 +26,14 @@ app.use(cors({
 
 }));
 
-app.get("/schedule",  getAllData);
 
-app.delete("/schedule/:id", deleteData);
+app.get("/schedule",  getTrainScheduleList);
 
-app.post("/schedule/add", jsonParser, sendData);
+app.delete("/schedule/:id", deleteTrainSchedule);
+
+app.post("/schedule/add", jsonParser, createTrainSchedule);
+
+app.patch("/schedule/edit/:id", jsonParser, updateTrainSchedule);
 
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}/schedule`);

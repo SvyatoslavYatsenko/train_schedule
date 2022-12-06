@@ -1,42 +1,83 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import classNames from 'classnames';
-import { ScheduleItemTypeToServer } from '../../types/TrainSchedule';
+import { ScheduleItemTypeFromServer, ScheduleItemTypeToServer } from '../../types/TrainSchedule';
 
 type Props = {
-    toggleModalWindow: (arg: boolean) => void
-    modalWindow: boolean
-    handleNewData: (newItem: ScheduleItemTypeToServer) => void
+    toggleAddModal: (arg: boolean) => void
+    addModal: boolean
+    addSchedule: (newItem: ScheduleItemTypeToServer) => void
+    editSchedule: (editedItem: ScheduleItemTypeToServer) => void
+    scheduleId: number | null
+    setScheduleId: (item: number | null) => void
+    data: ScheduleItemTypeFromServer[]
 }
 
 const Modal: React.FC<Props> = ({
-    toggleModalWindow,
-    modalWindow,
-    handleNewData,
+    toggleAddModal,
+    addModal,
+    addSchedule,
+    editSchedule,
+    scheduleId,
+    setScheduleId,
+    data
+
 }) => {
-    const { 
-        register, 
-        handleSubmit, 
-        formState: { errors } 
+    const { register, handleSubmit,reset, setValue, formState, formState:{errors}, 
     } = useForm<ScheduleItemTypeToServer>();
+
+    const isAddMode = !scheduleId;
+    
+    console.log(isAddMode);
+
+    //helper
+    const splitRoute = (data: ScheduleItemTypeFromServer[]) => {
+        const route = data[0].route.split('-');
+        const obj = JSON.parse(JSON.stringify(data[0]));
+        delete obj.route;
+        obj.route_from = route[0];
+        obj.route_to = route[1];
+        return obj;
+    };
+
+    useEffect(() => {
+        if (!isAddMode) {
+            const edit = splitRoute(data);
+
+            setValue('number', edit['number']);
+            setValue('route_from', edit['route_from']);
+            setValue('route_to', edit['route_to']);
+            setValue('periodicity', edit['periodicity']);
+            setValue('station', edit['station']);
+            setValue('arrival', edit['arrival']);
+            setValue('departure', edit['departure']);   
+            setValue('terminal', edit['terminal']);
+        }
+    }, [isAddMode]);
+
+    const onSubmit = (data: ScheduleItemTypeToServer) => {
+        return isAddMode 
+            ?addSchedule(data)
+            :editSchedule(data);
+    };
 
     return (
         <div>
             <form 
-                onSubmit={handleSubmit(data => handleNewData(data))}
+                onSubmit={handleSubmit(data => onSubmit(data))}
             >
                 <div className="modal-background">
                     <div className="modal-card">
                         <header className="modal-card-head">
-                            <p className="modal-card-title">Modal title</p>
+                            <p className="modal-card-title">{isAddMode 
+                                ? 'Новий графік' 
+                                : 'Змінити графік'}</p>
                             <button 
                                 className="delete" 
                                 aria-label="close"
-                                onClick={() => toggleModalWindow(!modalWindow)}
+                                onClick={() => toggleAddModal(!addModal)}
                             ></button>
-                        </header>
-                    
-                
+                        </header>               
                         <section className="modal-card-body is-flex-direction-column">
                             <div className="field">
                                 <label className="label">Номер потяга</label>
@@ -251,7 +292,7 @@ const Modal: React.FC<Props> = ({
                                                 <p className="help is-danger">{errors.arrival.message}</p>
                                             )}
                                         </>
-                                    ) : <p className="help is-success">You are smart one</p>}
+                                    ) : <p className="help is-success">Good</p>}
                             </div>
                             <div className="field">
                                 <label className="label">Час вiдправлення</label>
@@ -333,11 +374,17 @@ const Modal: React.FC<Props> = ({
                             </div>
                         </section>
                         <footer className="modal-card-foot">
-                            <button 
-                                className="button is-success"
-                                type='submit'
-                            >Submit</button>
-                            <button className="button">Cancel</button>
+                            <input 
+                                type="submit" 
+                                className={'button is-success'}
+                                disabled={formState.isSubmitting}
+                            />
+                            <input
+                                className='button'
+                                type="button"
+                                onClick={() => reset()}
+                                value="Reset"
+                            />
                         </footer>
                     </div>
                 </div>

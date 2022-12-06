@@ -5,16 +5,19 @@ import { ScheduleItem } from '../ScheduleItem';
 type ScheduleListType = ScheduleItemTypeFromServer[] | [];
 
 type Props = {
-    toggleModalWindow: (arg: boolean) => void
-    modalWindow: boolean
+    toggleAddModal: (arg: boolean) => void
+    addModal: boolean
+
     data: ScheduleListType
     handleDelete: (itemId: number) => Promise<void>
+    setScheduleId: (itemId: number) => void
 }
 export const ScheduleList: React.FC<Props> = ({
-    toggleModalWindow,
-    modalWindow,
+    toggleAddModal,
+    addModal,
     data,
     handleDelete,
+    setScheduleId
 }) => {
     
     return (
@@ -32,7 +35,7 @@ export const ScheduleList: React.FC<Props> = ({
                         <th>
                             <button    
                                 className="button is-outlined"
-                                onClick={() => toggleModalWindow(!modalWindow)}
+                                onClick={() => toggleAddModal(!addModal)}
                             >
                             New
                             </button>
@@ -48,6 +51,9 @@ export const ScheduleList: React.FC<Props> = ({
                                 key={item?.id} 
                                 scheduleItem={item}
                                 handleDelete={handleDelete}
+                                setScheduleId={setScheduleId}
+                                toggleAddModal={toggleAddModal}
+                                addModal={addModal}
                             />)}
                 </tfoot>
             </table>

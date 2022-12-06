@@ -4,9 +4,12 @@ import { ScheduleItemTypeFromServer } from '../../types/TrainSchedule';
 type Props = {
     scheduleItem: ScheduleItemTypeFromServer
     handleDelete: (itemId: number) => Promise<void>
+    setScheduleId: (itemId: number) => void
+    toggleAddModal: (arg: boolean) => void
+    addModal: boolean
 }
 
-export const ScheduleItem: React.FC<Props> = ({ scheduleItem, handleDelete}) => {
+export const ScheduleItem: React.FC<Props> = ({ scheduleItem, handleDelete, setScheduleId, toggleAddModal, addModal}) => {
 
     const handleRemove = async (event: FormEvent) => {
         event.preventDefault();
@@ -15,15 +18,18 @@ export const ScheduleItem: React.FC<Props> = ({ scheduleItem, handleDelete}) => 
     
     return (
         <tr>
-            <th><abbr title="Position">{scheduleItem?.number}</abbr></th>
-            <th>{scheduleItem?.route}</th>
-            <th><abbr title="Played">{scheduleItem?.periodicity}</abbr></th>
-            <th><abbr title="Won">{scheduleItem?.station}</abbr></th>
-            <th><abbr title="Drawn">{scheduleItem?.arrival}</abbr></th>
-            <th><abbr title="Lost">{scheduleItem?.departure}</abbr></th>
-            <th><abbr title="Goals for">{scheduleItem?.terminal}</abbr></th>
+            <th><abbr title="Number">{scheduleItem?.number}</abbr></th>
+            <th><abbr title="Number">{scheduleItem?.route}</abbr></th>
+            <th><abbr title="Periodicity">{scheduleItem?.periodicity}</abbr></th>
+            <th><abbr title="Station">{scheduleItem?.station}</abbr></th>
+            <th><abbr title="Arrival">{scheduleItem?.arrival}</abbr></th>
+            <th><abbr title="Departure">{scheduleItem?.departure}</abbr></th>
+            <th><abbr title="Terminal">{scheduleItem?.terminal}</abbr></th>
             <th> 
-                <button className="button is-info is-outlined">
+                <button 
+                    className="button is-info is-outlined"
+                    onClick={() => (setScheduleId(scheduleItem.id), toggleAddModal(!addModal))}
+                >
                     <span>Edit</span>
                     <span className="icon is-small">
                         <i className="fas fa-times"></i>

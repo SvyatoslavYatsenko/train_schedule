@@ -3,14 +3,15 @@ import './schedule.scss';
 import { ScheduleList } from '../ScheduleList';
 import Modal from '../Modal/Modal';
 import { ScheduleItemTypeFromServer, ScheduleItemTypeToServer } from '../../types/TrainSchedule';
-import { addScheduleItem, removeScheduleItem } from '../../utils';
+import { addScheduleItem, editScheduleItem, removeScheduleItem } from '../../utils';
 
 type ScheduleListType = ScheduleItemTypeFromServer[] | [];
 
 export const Schedule: React.FC = () => {
-    const [modalWindow, toggleModalWindow] = useState(false);
+    const [addModal, toggleAddModal] = useState(false);
     const [data, setData] = useState<ScheduleListType>([]);
     const [seletctedItems, setSelectedItems] = useState<number[]>([]);
+    const [scheduleId, setScheduleId] = useState<number | null>(null);
 
     useEffect(() => {
         fetch('/schedule')
@@ -19,24 +20,17 @@ export const Schedule: React.FC = () => {
     }, [seletctedItems]);
 
     const handleDelete = async (itemId: number) => {
-        setSelectedItems(state => [...state, itemId]);
-        try {
-            await removeScheduleItem(itemId);
-            setData(state => [...state.filter(item => item.id !== itemId)]);
-        } catch {
-            console.log('error');
-        }
-        setSelectedItems([]);
+        removeScheduleItem(itemId).then(() => setData(state => [...state.filter(item => item.id !== itemId)]));
     };
 
-    const handleNewData = async (newItem: ScheduleItemTypeToServer) => {
-        setSelectedItems(state => [...state, newItem.number]);
-        try {
-            await addScheduleItem(newItem);
-        } catch {
-            console.log('error');
+    const addSchedule = async (newItem: ScheduleItemTypeToServer) => {
+        addScheduleItem(newItem).then(() => setSelectedItems(state => [...state, newItem.number]));
+    };
+
+    const editSchedule = async (editededItem: ScheduleItemTypeToServer) => {
+        if(scheduleId) {
+            editScheduleItem(editededItem, scheduleId).then(() => setSelectedItems(state => [...state, editededItem.number]));
         }
-        setSelectedItems([]);
     };
 
     return (
@@ -45,15 +39,20 @@ export const Schedule: React.FC = () => {
                 <ScheduleList 
                     data={data}
                     handleDelete={handleDelete}
-                    toggleModalWindow={toggleModalWindow}
-                    modalWindow={modalWindow}
+                    toggleAddModal={toggleAddModal}
+                    addModal={addModal}
+                    setScheduleId={setScheduleId}
                 />
             </div>
-            {modalWindow
+            {addModal
                 ? <Modal 
-                    toggleModalWindow={toggleModalWindow}
-                    modalWindow={modalWindow}
-                    handleNewData={handleNewData}
+                    toggleAddModal={toggleAddModal}
+                    addModal={addModal}
+                    addSchedule={addSchedule}
+                    editSchedule={editSchedule}
+                    scheduleId={scheduleId}
+                    setScheduleId={setScheduleId}
+                    data={data.filter(item => item.id === scheduleId)}
                 />
                 : <></>
             }
