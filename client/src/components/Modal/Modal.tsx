@@ -19,7 +19,6 @@ const Modal: React.FC<Props> = ({
     addSchedule,
     editSchedule,
     scheduleId,
-    setScheduleId,
     data
 
 }) => {
@@ -53,6 +52,7 @@ const Modal: React.FC<Props> = ({
             setValue('departure', edit['departure']);   
             setValue('terminal', edit['terminal']);
         }
+
     }, [isAddMode]);
 
     const onSubmit = (data: ScheduleItemTypeToServer) => {
@@ -374,11 +374,13 @@ const Modal: React.FC<Props> = ({
                             </div>
                         </section>
                         <footer className="modal-card-foot">
-                            <input 
+                            <button 
                                 type="submit" 
                                 className={'button is-success'}
-                                disabled={formState.isSubmitting}
-                            />
+                                onClick={() => formState.isSubmitSuccessful && toggleAddModal(!addModal)}
+                            >
+                                {formState.isSubmitSuccessful ? 'Close' : 'Save'}
+                            </button>
                             <input
                                 className='button'
                                 type="button"
