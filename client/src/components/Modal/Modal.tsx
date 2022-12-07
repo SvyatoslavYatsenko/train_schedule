@@ -29,7 +29,6 @@ const Modal: React.FC<Props> = ({
     
     console.log(isAddMode);
 
-    //helper
     const splitRoute = (data: ScheduleItemTypeFromServer[]) => {
         const route = data[0].route.split('-');
         const obj = JSON.parse(JSON.stringify(data[0]));

@@ -8,9 +8,6 @@ import { SortBy } from '../../types/SortTypes';
 
 type ScheduleListType = ScheduleItemTypeFromServer[] | [];
 
-
-
-
 export const Schedule: React.FC = () => {
     const [addModal, toggleAddModal] = useState(false);
     const [data, setData] = useState<ScheduleListType>([]);

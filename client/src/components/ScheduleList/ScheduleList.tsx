@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ScheduleItemTypeFromServer } from '../../types/TrainSchedule';
 import { ScheduleItem } from '../ScheduleItem';
 import { SortBy } from '../../types/SortTypes';

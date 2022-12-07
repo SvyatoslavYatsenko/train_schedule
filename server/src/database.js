@@ -1,10 +1,16 @@
+import dotenv from 'dotenv';
+
+dotenv.config({ path: process.cwd() + '/src/.env' });
+
 import Sequelize from 'sequelize';
+
+
 export const sequelize = new Sequelize(
- 'test',
- 'svyatoslav',
- 'manowars',
+  process.env.DB_DATABASE, 
+  process.env.DB_USERNAME, 
+  process.env.DB_PASSWORD,
   {
-    host: '127.0.0.1',
+    host: process.env.DB_HOST,
     dialect: 'mysql'
   }
 );
