@@ -26,7 +26,6 @@ export const Schedule: React.FC = () => {
     }, [seletctedItems]);
 
     console.log(data);
-    console.log(sortedData);
 
     const handleDelete = async (itemId: number) => {
         removeScheduleItem(itemId).then(() => setData(state => [...state.filter(item => item.id !== itemId)]));

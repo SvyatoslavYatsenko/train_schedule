@@ -9,7 +9,11 @@ export const handleObjectKeys = (newSchedule) => {
 }
 
 export const deleteSpasesInValues = (newSchedule) => {
-    Object.keys(newSchedule).forEach(key => newSchedule[key] = newSchedule[key].trim());
+    Object.keys(newSchedule).forEach(key => {
+        if(typeof newSchedule[key] === 'string'){
+            newSchedule[key] = newSchedule[key].trim()
+        }
+    });
     return newSchedule;
 }
 

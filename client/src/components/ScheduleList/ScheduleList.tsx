@@ -27,17 +27,15 @@ export const ScheduleList: React.FC<Props> = ({
     setScheduleId,
     setSortType,
     sortType,
-    setSortedData,
-    sortedData
-
 }) => {
     
-    console.log(sortedData);
+    console.log(data);
 
     const sortData = () => {
+        const temp = [...data];
         switch(sortType) {
         case SortBy.NUMBER:
-            sortedData.sort(function (a, b) {
+            temp.sort(function (a, b) {
                 if (a.number > b.number) {
                     return 1;
                 }
@@ -49,48 +47,52 @@ export const ScheduleList: React.FC<Props> = ({
             break;
 
         case SortBy.ROUTE:
-            sortedData.sort(function (a, b) {
-                return ('' + a.route).localeCompare(b.route);
+            temp.sort(function (a, b) {
+                return (a.route).localeCompare(b.route);
             });
             break;
         case SortBy.STATION:
-            sortedData.sort(function (a, b) {
-                return ('' + a.route).localeCompare(b.route);
+            temp.sort(function (a, b) {
+                return (a.station).localeCompare(b.station);
             });
             break;
         case SortBy.ARRIVAL:
-            sortedData.sort(function (a, b) {
-                if (a.arrival > b.arrival) {
+            temp.sort(function(a, b) {
+                if ((a.arrival) > (b.arrival)) {
                     return 1;
                 }
-                if (a.arrival < b.arrival) {
+                if ((a.arrival) < (b.arrival)) {
                     return -1;
                 }
                 return 0;
             });
             break;
         case SortBy.DEPARTURE:
-            sortedData.sort(function (a, b) {
-                if (a.departure > b.departure) {
+            temp.sort(function(a, b) {
+                if ((a.departure) > (b.departure)) {
                     return 1;
                 }
-                if (a.departure < b.departure) {
+                if ((a.departure) < (b.departure)) {
                     return -1;
                 }
                 return 0;
             });
             break;
-        
-            
+        case SortBy.TERMINAL:
+            temp.sort(function(a, b) {
+                if ((a.terminal) > (b.terminal)) {
+                    return 1;
+                }
+                if ((a.terminal) < (b.terminal)) {
+                    return -1;
+                }
+                return 0;
+            });
+            break;
         }
-        
-        setSortedData(sortedData);
+
+        return temp;
     };
-
-
-    useEffect(sortData,
-        [sortType]);
-    console.log(sortedData);
 
     return (
         <div>
@@ -176,7 +178,7 @@ export const ScheduleList: React.FC<Props> = ({
                 </tbody>  
                 <tfoot>
                     { 
-                        sortedData.map(item => 
+                        sortData().map(item => 
                             <ScheduleItem 
                                 key={item?.id} 
                                 scheduleItem={item}
